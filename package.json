@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.js",
   "scripts": {
-    "start": "node --trace-warnings --watch src/app.js ",
+    "start": "node src/app.js ",
     "test_logic": "nodemon tests/Tests.js",
     "start-dev": "nodemon src/app.js",
     "test": "jest --setupFiles dotenv/config -i",
