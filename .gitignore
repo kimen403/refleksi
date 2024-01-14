@@ -1,0 +1,10 @@
+node_modules
+package-lock.json
+.idea
+.env
+coverage
+refleksikeysecret.pem
+README.txt
+chatgpt
+.NOTE-PROJECT
+nodemon.json
