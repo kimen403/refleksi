@@ -63,7 +63,7 @@ class PostCreditKasUseCase {
         const date = new Date().toISOString();
         const idTR = `TRKB-${date}-${this._idGenerator(5)}`;
         const newTransaksi = {
-          idPegawai,
+          memberId : idPegawai,
           idKasir,
           adminId: id,
           keterangan,
