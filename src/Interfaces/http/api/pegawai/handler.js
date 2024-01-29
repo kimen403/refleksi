@@ -59,14 +59,16 @@ class PegawaiHandler {
   }
 
   async getHistoryTransaksiPegawaiHandler(request, h) {
+    console.log('masuk history transaksi pegawai handler');
     const { id } = request.params;
     const getHistoryPegawaiUseCase = this._container.getInstance(GetHistoryTransaksiPegawaiUseCase.name);
     console.log(id);
     const pegawai = await getHistoryPegawaiUseCase.execute(id);
-    return {
+    const response = h.response({
       status: 'success',
-      data: pegawai,
-    };
+      pegawai,
+    });
+    return response;
   }
 }
 

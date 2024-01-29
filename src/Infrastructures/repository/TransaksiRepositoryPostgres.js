@@ -100,32 +100,25 @@ class TransaksiRepositoryPostgres extends TransaksiRepository {
   }
 
   async getHistoryTransaksiPegawai(idPegawai) {
-    const queryPenjualan = {
-      text: 'SELECT id_penjualan, id_barang_jasa, SUM(sub_total) FROM detail_penjualan WHERE "isDelete" = false AND id_pegawai = $1  GROUP BY id_penjualan, id_barang_jasa ORDER BY id_penjualan, "createdAt" DESC',
+    console.log('masuk history transaksi pegawai repository');
+    const query = {
+      text: 'SELECT * FROM uangpegawai WHERE "idPegawai" = $1 ',
       values: [idPegawai],
     };
-    try {
-      const result = await this._pool.query(queryPenjualan);
-      return result.rows;
-    } catch (error) {
-      console.log(error);
-    }
-    // const queryPenjualan = {
-    //   text: 'SELECT id,id_penjualan,"createdAt",id_barang_jasa,qty,sub_total SUM(sub_total) FROM detail_penjualan GROUP BY id_penjualan WHERE "isDelete" = false AND id_pegawai = $1  ORDER BY id_penjualan, "createdAt" DESC',
-    //   values: [idPegawai],
-    // };
+    const result = await this._pool.query(query);
+    console.log(result.rows);
+    return result.rows;
+  }
 
-    const penjualan = await this._pool.query(queryPenjualan);
-    const queryKasbon = {
-      text: 'SELECT id,tanggal,keterangan,"paymentType",total FROM transaksi WHERE "isDelete" = false AND member_id = $1 ORDER BY tanggal DESC',
-      values: [idPegawai],
+  async getHistoryTransaksiPenjualan(idKasir) {
+    const query = {
+      text: 'SELECT * FROM transaksi WHERE id_kasir = $1 AND "coa" = $2 AND "isDelete"= false ORDER BY tanggal DESC',
+      values: [idKasir, 'PENJUALAN'],
     };
 
-    const kasbon = await this._pool.query(queryKasbon);
-    return {
-      penjualan: penjualan.rows,
-      kasbon: kasbon.rows,
-    };
+    const result = await this._pool.query(query);
+    console.log(result.rows);
+    return result.rows;
   }
 
   async getTransaksiById(idTransaksi) {

@@ -86,6 +86,7 @@ const PostCancelTransaksiUseCase = require('../Applications/use_case/Transaksi_U
 const DeleteAuthenticationUseCase = require('../Applications/use_case/Auth_UseCase/DeleteAuthenticationUseCase');
 const PostDebitKasUseCase = require('../Applications/use_case/Kasir_UseCase/PostDebitKas');
 const PostCreditKasUseCase = require('../Applications/use_case/Kasir_UseCase/PostCreditKas');
+const GetHistoryPenjualanUseCase = require('../Applications/use_case/Transaksi_UseCase/GetHistoryPenjualanUseCase');
 
 // creating container
 const container = createContainer();
@@ -794,7 +795,39 @@ container.register([
       ],
     },
   },
+  // GET HISTORY TRANSAKSI PEGAWAI
+  {
+    key: GetHistoryTransaksiPegawaiUseCase.name,
+    Class: GetHistoryTransaksiPegawaiUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'pegawaiRepository',
+          internal: PegawaiRepository.name,
+        },
+        {
+          name: 'transaksiRepository',
+          internal: TransaksiRepository.name,
+        },
+      ],
+    },
+  },
 
+  // GET HISTORY PENJUALAN
+  {
+    key: GetHistoryPenjualanUseCase.name,
+    Class: GetHistoryPenjualanUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'transaksiRepository',
+          internal: TransaksiRepository.name,
+        },
+      ],
+    },
+  },
 ]);
 
 module.exports = container;

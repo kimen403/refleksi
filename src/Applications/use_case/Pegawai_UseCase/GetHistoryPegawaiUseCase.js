@@ -17,7 +17,7 @@ class GetHistoryTransaksiPegawaiUseCase {
   async execute(useCasePayload) {
     await this._pegawaiRepository.verifyAvailablePegawai(useCasePayload);
     console.log('useCasePayload', useCasePayload);
-
+    console.log('masuk history transaksi pegawai');
     const result = await this._transaksiRepository.getHistoryTransaksiPegawai(useCasePayload);
     return result;
   }

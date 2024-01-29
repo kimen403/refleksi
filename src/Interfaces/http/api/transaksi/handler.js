@@ -11,6 +11,7 @@ const PostCancelTransaksiUseCase = require('../../../../Applications/use_case/Tr
 
 const PostTransaksiPenjualanUseCase = require('../../../../Applications/use_case/Transaksi_UseCase/PostTransaksiPenjualanUseCase');
 const InvariantError = require('../../../../Commons/exceptions/InvariantError');
+const GetHistoryPenjualanUseCase = require('../../../../Applications/use_case/Transaksi_UseCase/GetHistoryPenjualanUseCase');
 
 class TransaksiHandler {
   constructor(container) {
@@ -22,6 +23,7 @@ class TransaksiHandler {
     this.getTransaksiDetailByIdHandler = this.getTransaksiDetailByIdHandler.bind(this);
     this.postTransaksiKasHandler = this.postTransaksiKasHandler.bind(this);
     this.postCancelTransaksiHandler = this.postCancelTransaksiHandler.bind(this);
+    this.getHistoryPenjualanHandler = this.getHistoryPenjualanHandler.bind(this);
   }
 
   async postTransaksiHandler(request, h) {
@@ -192,6 +194,21 @@ class TransaksiHandler {
       status: 'success',
       transaksiDetail,
     });
+    response.code(200);
+    return response;
+  }
+
+  async getHistoryPenjualanHandler(request, h) {
+    const { idKasir } = request.auth.credentials;
+    console.log('idKasir', idKasir);
+    const getHistoryPenjualanUseCase = this._container.getInstance(GetHistoryPenjualanUseCase.name);
+    const historyPenjualan = await getHistoryPenjualanUseCase.execute(idKasir);
+
+    const response = h.response({
+      status: 'success',
+      historyTransaksi: historyPenjualan,
+    });
+
     response.code(200);
     return response;
   }

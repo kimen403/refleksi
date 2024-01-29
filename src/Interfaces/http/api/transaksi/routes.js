@@ -67,6 +67,20 @@ const routes = (handler) => [
     handler: handler.getTransaksiDetailByIdHandler,
   },
 
+  {
+    method: 'GET',
+    path: '/history/penjualan',
+    handler: handler.getHistoryPenjualanHandler,
+    options: {
+      auth: 'refleksi_jwt',
+      plugins: {
+        hacli: {
+          permissions: ['OWNER', 'MANAGER', 'ADMIN'],
+        },
+      },
+    },
+  },
+
 ];
 
 module.exports = routes;
