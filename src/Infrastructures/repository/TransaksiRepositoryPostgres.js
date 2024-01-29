@@ -147,6 +147,20 @@ class TransaksiRepositoryPostgres extends TransaksiRepository {
       text: 'UPDATE transaksi SET "isDelete" = true, "is_deleteKeterangan" = $2 WHERE id = $1 RETURNING id',
       values: [idTransaksi, keterangan],
     };
+    // mengurangi saldo kasir
+    const querySaldoKasir = {
+      text: 'UPDATE kasir SET saldo = saldo - (SELECT total FROM transaksi WHERE id = $1) WHERE id = (SELECT id_kasir FROM transaksi WHERE id = $1) RETURNING id',
+      values: [idTransaksi],
+    };
+
+    await this._pool.query(querySaldoKasir);
+    // mengurangi saldo pegawai
+    const querySaldoPegawai = {
+      text: 'UPDATE pegawai SET saldo = saldo - (SELECT sub_total FROM detail_penjualan WHERE id_penjualan = $1) WHERE id = (SELECT id_pegawai FROM detail_penjualan WHERE id_penjualan = $1) RETURNING id',
+      values: [idTransaksi],
+    };
+
+    await this._pool.query(querySaldoPegawai);
 
     const result = await this._pool.query(query);
     return result.rows[0];
