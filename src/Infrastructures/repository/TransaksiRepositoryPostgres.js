@@ -148,20 +148,29 @@ class TransaksiRepositoryPostgres extends TransaksiRepository {
       values: [idTransaksi, keterangan],
     };
     // mengurangi saldo kasir
+    console.log('berhasil update transaksi');
+
     const querySaldoKasir = {
-      text: 'UPDATE kasir SET saldo = saldo - (SELECT total FROM transaksi WHERE id = $1) WHERE id = (SELECT id_kasir FROM transaksi WHERE id = $1) RETURNING id',
+      text: 'UPDATE kasir SET saldo_seharusnya = saldo_seharusnya - (SELECT total FROM transaksi WHERE id = $1) WHERE id = (SELECT id_kasir FROM transaksi WHERE id = $1)',
       values: [idTransaksi],
     };
-
-    await this._pool.query(querySaldoKasir);
+    try {
+      await this._pool.query(querySaldoKasir);
+    } catch (error) {
+      console.log(error);
+    }
+    console.log('berhasil update saldo kasir');
     // mengurangi saldo pegawai
     const querySaldoPegawai = {
-      text: 'UPDATE pegawai SET saldo = saldo - (SELECT sub_total FROM detail_penjualan WHERE id_penjualan = $1) WHERE id = (SELECT id_pegawai FROM detail_penjualan WHERE id_penjualan = $1) RETURNING id',
+      text: 'UPDATE pegawai SET saldo = saldo - ((SELECT SUM(detail_penjualan.sub_total) FROM detail_penjualan WHERE id_pegawai = pegawai.id AND id_penjualan =$1)*0.5) FROM detail_penjualan WHERE detail_penjualan.id_penjualan = $1 AND pegawai.id = detail_penjualan.id_pegawai',
       values: [idTransaksi],
     };
-
-    await this._pool.query(querySaldoPegawai);
-
+    try {
+      await this._pool.query(querySaldoPegawai);
+    } catch (error) {
+      console.log(error);
+    }
+    console.log('berhasil update saldo pegawai');
     const result = await this._pool.query(query);
     return result.rows[0];
   }

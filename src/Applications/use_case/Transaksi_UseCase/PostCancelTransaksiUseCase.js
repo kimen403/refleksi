@@ -18,7 +18,7 @@ class PostCancelTransaksiUseCase {
   // NOTE : payload { id, keterangan }
   async execute(useCasePayload, authUser) {
     await this._transaksiRepository.verifyTransaksi(useCasePayload.id);
-
+    console.log('masuk use case cancel');
     await this._transaksiRepository.deleteTransaksi(useCasePayload.id, useCasePayload.keterangan);
     await this._transaksiDetailRepository.deleteTransaksiDetail(useCasePayload.id);
   }
