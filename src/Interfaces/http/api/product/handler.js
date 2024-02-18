@@ -17,9 +17,9 @@ class ProductHandler {
 
   async postProductsHandler(request, h) {
     const usecasePayload = request.payload;
+    console.log(usecasePayload);
     const addProductUseCase = this._container.getInstance(AddProductUseCase.name);
     const addedProduct = await addProductUseCase.execute(usecasePayload);
-
     const response = h.response({
       status: 'success',
       data: addedProduct,

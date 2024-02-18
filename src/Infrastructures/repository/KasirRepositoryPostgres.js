@@ -10,15 +10,12 @@ class KasirRepositoryPostgres extends KasirRepository {
   }
 
   async historyKasir(idKasir) {
+    console.log('masuk repo history kasir');
     const query = {
-      text: 'SELECT id,member_id AS "memberId",tanggal,keterangan,type,coa,"paymentType",total,"isDelete" FROM transaksi WHERE id_kasir = $1 ORDER BY tanggal DESC',
+      text: 'SELECT t.id,t.member_id AS "memberId",t.tanggal,t.keterangan,t.type,t.coa,t."paymentType",t.total,t."isDelete",p.nama AS "namaPegawai" FROM transaksi AS t LEFT JOIN pegawai AS p ON p.id = t.id_pegawai WHERE t.id_kasir = $1 ORDER BY tanggal DESC',
       values: [idKasir],
     };
-    try {
-      await this._pool.query(query);
-    } catch (error) {
-      console.log(error);
-    }
+
     const { rows } = await this._pool.query(query);
     console.log(rows);
     return rows;

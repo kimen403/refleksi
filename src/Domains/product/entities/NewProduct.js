@@ -9,7 +9,7 @@ class NewProduct {
     this.unitId = unitId;
     this.categoryId = categoryId;
     this.stockNow = stockNow;
-    this.stockMin = stockMin;
+    this.stockMin = stockMin ?? 0;
     this.unitPrice = unitPrice;
     this.hargaBeli = hargaBeli;
     this.image = image;
@@ -22,7 +22,7 @@ class NewProduct {
     } = payload;
 
     // veryfiy payload required
-    if (!productName || !unitId || !categoryId || !stockNow || !stockMin || !unitPrice || !hargaBeli) {
+    if (!productName || !unitId || !categoryId || !stockNow || !unitPrice || !hargaBeli) {
       throw new Error('NEW_PRODUCT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 

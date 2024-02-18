@@ -4,14 +4,13 @@ exports.shorthands = undefined;
 
 exports.up = (pgm) => {
   pgm.addColumns('transaksi', {
-    is_deleteKeterangan: {
+    id_pegawai: {
       type: 'TEXT',
       notNull: false,
-      default: 'false',
     },
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropColumns('transaksi', 'is_deleteKeterangan');
+  pgm.dropColumns('transaksi', 'id_pegawai');
 };

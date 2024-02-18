@@ -23,7 +23,7 @@ class PostCreditKasUseCase {
       keterangan, jenis, nominal, idPegawai,
     } = useCasePayload;
     console.log('idKasir', idKasir);
-
+    console.log(useCasePayload.jenis.toUpperCase());
     switch (jenis.toUpperCase()) {
       case 'BIAYA OPERASIONAL': {
         const date = new Date().toISOString();
@@ -63,17 +63,17 @@ class PostCreditKasUseCase {
         const date = new Date().toISOString();
         const idTR = `TRKB-${date}-${this._idGenerator(5)}`;
         const newTransaksi = {
-          memberId: idPegawai,
+          idPegawai,
           idKasir,
           adminId: id,
           keterangan,
           type: 'out',
           coa: 'KASBON',
           paymentType: 'CASH',
-          totalHarga: nominal,
+          jumlah: nominal,
           subTotal: nominal,
         };
-        const addedTransaksi = await this._transaksiRepository.addTransaksi(idTR, newTransaksi, idKasir);
+        const addedTransaksi = await this._transaksiRepository.addTransaksiKasKredit(idTR, newTransaksi);
         return addedTransaksi;
       }
 

@@ -68,17 +68,17 @@ class TransaksiRepositoryPostgres extends TransaksiRepository {
     }
   }
 
-  async addTransaksiKasKredit({
-    idPegawai: memberId, jumlah, diskonPercent = 0, keterangan,
-  }, coa, idKasir, type, adminId) {
+  async addTransaksiKasKredit(idTransaksi, {
+    idPegawai, jumlah, diskonPercent = 0, keterangan, memberId = '-', coa, type, adminId, idKasir,
+  }) {
     const paymentType = 'Cash';
     const isDelete = false;
-    const idTransaksi = `TransaksiKredit-${this._idGenerator(5)}`;
+    const _idTransaksi = idTransaksi ?? `TransaksiKredit-${this._idGenerator(5)}`;
     const tanggal = new Date().toISOString();
     const query = {
-      text: 'INSERT INTO transaksi VALUES($1, $2, $3, $4, $5, $6, $7, $8,$9,$10,$11,$12,$13) RETURNING id,total AS "jumlah"',
-      values: [idTransaksi, memberId, tanggal, keterangan, type, coa,
-        paymentType, jumlah, diskonPercent, jumlah, adminId, isDelete, idKasir],
+      text: 'INSERT INTO transaksi VALUES($1, $2, $3, $4, $5, $6, $7, $8,$9,$10,$11,$12,$13 ,$14 ,$15) RETURNING id,total AS "jumlah"',
+      values: [_idTransaksi, memberId, tanggal, keterangan, type, coa,
+        paymentType, jumlah, diskonPercent, jumlah, adminId, isDelete, idKasir, false, idPegawai],
     };
     try {
       const { rows } = await this._pool.query(query);
