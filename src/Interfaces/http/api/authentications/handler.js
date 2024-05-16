@@ -11,15 +11,19 @@ class AuthenticationsHandler {
   }
 
   async postAuthenticationHandler(request, h) {
+    console.log(request.payload);
     const loginUserUseCase = this._container.getInstance(LoginUserUseCase.name);
     const authData = await loginUserUseCase.execute(
       request.payload,
     );
+    console.log(authData);
+
     const response = h.response({
       status: 'success',
       data: authData,
     });
     response.code(201);
+    console.log(response.code);
     return response;
   }
 
