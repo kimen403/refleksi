@@ -18,6 +18,8 @@
         "linebreak-style": "off",
         "max-len": "off",
         "no-unused-vars": "off",
-        "no-var": "off"
+        "no-var": "off",
+        "quotes": "off",
+        "comma-dangle": "off"
     }
 }

@@ -1,92 +1,93 @@
 /* istanbul ignore file */
 
-const { createContainer } = require('instances-container');
+const { createContainer } = require("instances-container");
 
 // external agency
-const { nanoid } = require('nanoid');
-const bcrypt = require('bcrypt');
-const Jwt = require('@hapi/jwt');
-const pool = require('./database/postgres/pool');
+const { nanoid } = require("nanoid");
+const bcrypt = require("bcrypt");
+const Jwt = require("@hapi/jwt");
+const pool = require("./database/postgres/pool");
 
 // service (repository, helper, manager, etc)
-const PasswordHash = require('../Applications/security/PasswordHash');
-const BcryptPasswordHash = require('./security/BcryptPasswordHash');
+const PasswordHash = require("../Applications/security/PasswordHash");
+const BcryptPasswordHash = require("./security/BcryptPasswordHash");
 // authenticationRepository
-const AuthenticationRepository = require('../Domains/authentications/AuthenticationRepository');
-const AuthenticationRepositoryPostgres = require('./repository/AuthenticationRepositoryPostgres');
+const AuthenticationRepository = require("../Domains/authentications/AuthenticationRepository");
+const AuthenticationRepositoryPostgres = require("./repository/AuthenticationRepositoryPostgres");
 // adminRepository
-const AdminRepository = require('../Domains/admin/AdminRepository');
-const AdminRepositoryPostgres = require('./repository/AdminRepositoryPostgres');
+const AdminRepository = require("../Domains/admin/AdminRepository");
+const AdminRepositoryPostgres = require("./repository/AdminRepositoryPostgres");
 
 // PegawaiRepository
-const PegawaiRepository = require('../Domains/pegawai/PegawaiRepository');
-const PegawaiRepositoryPostgres = require('./repository/PegawaiRepositoryPostgres');
+const PegawaiRepository = require("../Domains/pegawai/PegawaiRepository");
+const PegawaiRepositoryPostgres = require("./repository/PegawaiRepositoryPostgres");
 // jasaRepository
-const JasaRepository = require('../Domains/jasa/JasaRepository');
-const JasaRepositoryPostgres = require('./repository/JasaRepositoryPostgres');
+const JasaRepository = require("../Domains/jasa/JasaRepository");
+const JasaRepositoryPostgres = require("./repository/JasaRepositoryPostgres");
 // transaksiRepository
-const TransaksiRepository = require('../Domains/transaksi/TransaksiRepository');
-const TransaksiRepositoryPostgres = require('./repository/TransaksiRepositoryPostgres');
+const TransaksiRepository = require("../Domains/transaksi/TransaksiRepository");
+const TransaksiRepositoryPostgres = require("./repository/TransaksiRepositoryPostgres");
 // productRepository
-const ProductRepository = require('../Domains/product/ProductRepository');
-const ProductRepositoryPostgres = require('./repository/ProductRepositoryPostgres');
+const ProductRepository = require("../Domains/product/ProductRepository");
+const ProductRepositoryPostgres = require("./repository/ProductRepositoryPostgres");
 // detailTransaksiRepository
-const TransaksiDetailRepositoryPostgres = require('./repository/TransaksiDetailRepositoryPostgres');
-const TransaksiDetailRepository = require('../Domains/transaksi/TransaksiDetailRepository');
+const TransaksiDetailRepositoryPostgres = require("./repository/TransaksiDetailRepositoryPostgres");
+const TransaksiDetailRepository = require("../Domains/transaksi/TransaksiDetailRepository");
 // kasirRepository
-const KasirRepository = require('../Domains/transaksi/KasirRepository');
-const KasirRepositoryPostgres = require('./repository/KasirRepositoryPostgres');
+const KasirRepository = require("../Domains/transaksi/KasirRepository");
+const KasirRepositoryPostgres = require("./repository/KasirRepositoryPostgres");
 
 // ------------------ useCase ------------------
-const AuthenticationTokenManager = require('../Applications/security/AuthenticationTokenManager');
-const JwtTokenManager = require('./security/JwtTokenManager');
-const RefreshAuthenticationUseCase = require('../Applications/use_case/Auth_UseCase/RefreshAuthenticationUseCase');
+const AuthenticationTokenManager = require("../Applications/security/AuthenticationTokenManager");
+const JwtTokenManager = require("./security/JwtTokenManager");
+const RefreshAuthenticationUseCase = require("../Applications/use_case/Auth_UseCase/RefreshAuthenticationUseCase");
 // userUseCase
-const AddAdminUseCase = require('../Applications/use_case/AdminUseCase/AddAdminUseCase');
-const LoginAdminUseCase = require('../Applications/use_case/AdminUseCase/LoginAdminUseCase');
-const LogoutUserUseCase = require('../Applications/use_case/AdminUseCase/LogoutUserUseCase');
+const AddAdminUseCase = require("../Applications/use_case/AdminUseCase/AddAdminUseCase");
+const LoginAdminUseCase = require("../Applications/use_case/AdminUseCase/LoginAdminUseCase");
+const LogoutUserUseCase = require("../Applications/use_case/AdminUseCase/LogoutUserUseCase");
 
 // jasaUseCase
-const AddJasaUseCase = require('../Applications/use_case/Jasa_UseCase/addJasaUseCase');
-const GetJasaUseCase = require('../Applications/use_case/Jasa_UseCase/getJasaUseCase');
-const DeleteJasaUseCase = require('../Applications/use_case/Jasa_UseCase/deleteJasaUseCase');
+const AddJasaUseCase = require("../Applications/use_case/Jasa_UseCase/addJasaUseCase");
+const GetJasaUseCase = require("../Applications/use_case/Jasa_UseCase/getJasaUseCase");
+const DeleteJasaUseCase = require("../Applications/use_case/Jasa_UseCase/deleteJasaUseCase");
 
 // pegawaiUseCase
-const AddPegawaiUseCase = require('../Applications/use_case/Pegawai_UseCase/AddPegawaiUseCase');
-const GetAllPegawaiUseCase = require('../Applications/use_case/Pegawai_UseCase/GetAllPegawaiUseCase');
-const DeletePegawaiByIdUseCase = require('../Applications/use_case/Pegawai_UseCase/DeletePegawaiByIdUseCase');
-const GetPegawaiByIdUseCase = require('../Applications/use_case/Pegawai_UseCase/GetPegawaiByIdUseCase');
+const AddPegawaiUseCase = require("../Applications/use_case/Pegawai_UseCase/AddPegawaiUseCase");
+const GetAllPegawaiUseCase = require("../Applications/use_case/Pegawai_UseCase/GetAllPegawaiUseCase");
+const DeletePegawaiByIdUseCase = require("../Applications/use_case/Pegawai_UseCase/DeletePegawaiByIdUseCase");
+const GetPegawaiByIdUseCase = require("../Applications/use_case/Pegawai_UseCase/GetPegawaiByIdUseCase");
 
 // transaksiUseCase
-const AddTransaksiUseCase = require('../Applications/use_case/Transaksi_UseCase/AddTransaksiPenjualanUseCase');
-const GetAllTransaksiUseCase = require('../Applications/use_case/Transaksi_UseCase/GetAllTransaksiUseCase');
-const PostTransaksiPenjualanUseCase = require('../Applications/use_case/Transaksi_UseCase/PostTransaksiPenjualanUseCase');
+const AddTransaksiUseCase = require("../Applications/use_case/Transaksi_UseCase/AddTransaksiPenjualanUseCase");
+const GetAllTransaksiUseCase = require("../Applications/use_case/Transaksi_UseCase/GetAllTransaksiUseCase");
+const PostTransaksiPenjualanUseCase = require("../Applications/use_case/Transaksi_UseCase/PostTransaksiPenjualanUseCase");
 
 // kasirUseCase
-const OpenKasirUseCase = require('../Applications/use_case/Kasir_UseCase/OpenKasir');
-const CloseKasirUseCase = require('../Applications/use_case/Kasir_UseCase/CloseKasir');
+const OpenKasirUseCase = require("../Applications/use_case/Kasir_UseCase/OpenKasir");
+const CloseKasirUseCase = require("../Applications/use_case/Kasir_UseCase/CloseKasir");
 
 // productUseCase
-const AddProductUseCase = require('../Applications/use_case/Product_UseCase/AddProduct');
-const AddStockUseCase = require('../Applications/use_case/Product_UseCase/AddStock');
-const GetAllProductUseCase = require('../Applications/use_case/Product_UseCase/GetAllProduct');
-const GetMinStockProductUseCase = require('../Applications/use_case/Product_UseCase/GetMinStock');
-const GetProductByIdUseCase = require('../Applications/use_case/Product_UseCase/GetProductById');
+const AddProductUseCase = require("../Applications/use_case/Product_UseCase/AddProduct");
+const AddStockUseCase = require("../Applications/use_case/Product_UseCase/AddStock");
+const GetAllProductUseCase = require("../Applications/use_case/Product_UseCase/GetAllProduct");
+const GetMinStockProductUseCase = require("../Applications/use_case/Product_UseCase/GetMinStock");
+const GetProductByIdUseCase = require("../Applications/use_case/Product_UseCase/GetProductById");
+const addCategoryUseCase = require("../Applications/use_case/Product_UseCase/AddCategory");
 
 // transaksiPenjualanUseCase
-const AddTransaksiPenjualanUseCase = require('../Applications/use_case/Transaksi_UseCase/AddTransaksiPenjualanUseCase');
-const GetTransaksiDetailByIdUseCase = require('../Applications/use_case/Transaksi_UseCase/GetTransaksiDetailByIdUseCase');
-const GetKasirByIdAdminUseCase = require('../Applications/use_case/Kasir_UseCase/GetKasirByIdAdmin');
-const GetAllHistoryKasirUseCase = require('../Applications/use_case/Kasir_UseCase/GetAllHistoryKasir');
-const CheckKasirUseCase = require('../Applications/use_case/Kasir_UseCase/CheckKasirStatus');
-const PostTransaksiKasDebit = require('../Applications/use_case/Kas_UseCase/PostTransaksiKasDebit');
-const PostTransaksiKasKreditUseCase = require('../Applications/use_case/Kas_UseCase/PostTransaksiKasKredit');
-const GetHistoryTransaksiPegawaiUseCase = require('../Applications/use_case/Pegawai_UseCase/GetHistoryPegawaiUseCase');
-const PostCancelTransaksiUseCase = require('../Applications/use_case/Transaksi_UseCase/PostCancelTransaksiUseCase');
-const DeleteAuthenticationUseCase = require('../Applications/use_case/Auth_UseCase/DeleteAuthenticationUseCase');
-const PostDebitKasUseCase = require('../Applications/use_case/Kasir_UseCase/PostDebitKas');
-const PostCreditKasUseCase = require('../Applications/use_case/Kasir_UseCase/PostCreditKas');
-const GetHistoryPenjualanUseCase = require('../Applications/use_case/Transaksi_UseCase/GetHistoryPenjualanUseCase');
+const AddTransaksiPenjualanUseCase = require("../Applications/use_case/Transaksi_UseCase/AddTransaksiPenjualanUseCase");
+const GetTransaksiDetailByIdUseCase = require("../Applications/use_case/Transaksi_UseCase/GetTransaksiDetailByIdUseCase");
+const GetKasirByIdAdminUseCase = require("../Applications/use_case/Kasir_UseCase/GetKasirByIdAdmin");
+const GetAllHistoryKasirUseCase = require("../Applications/use_case/Kasir_UseCase/GetAllHistoryKasir");
+const CheckKasirUseCase = require("../Applications/use_case/Kasir_UseCase/CheckKasirStatus");
+const PostTransaksiKasDebit = require("../Applications/use_case/Kas_UseCase/PostTransaksiKasDebit");
+const PostTransaksiKasKreditUseCase = require("../Applications/use_case/Kas_UseCase/PostTransaksiKasKredit");
+const GetHistoryTransaksiPegawaiUseCase = require("../Applications/use_case/Pegawai_UseCase/GetHistoryPegawaiUseCase");
+const PostCancelTransaksiUseCase = require("../Applications/use_case/Transaksi_UseCase/PostCancelTransaksiUseCase");
+const DeleteAuthenticationUseCase = require("../Applications/use_case/Auth_UseCase/DeleteAuthenticationUseCase");
+const PostDebitKasUseCase = require("../Applications/use_case/Kasir_UseCase/PostDebitKas");
+const PostCreditKasUseCase = require("../Applications/use_case/Kasir_UseCase/PostCreditKas");
+const GetHistoryPenjualanUseCase = require("../Applications/use_case/Transaksi_UseCase/GetHistoryPenjualanUseCase");
 
 // creating container
 const container = createContainer();
@@ -244,10 +245,10 @@ container.register([
     key: DeleteAuthenticationUseCase.name,
     Class: DeleteAuthenticationUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'authenticationRepository',
+          name: "authenticationRepository",
           internal: AuthenticationRepository.name,
         },
       ],
@@ -258,10 +259,10 @@ container.register([
     key: OpenKasirUseCase.name,
     Class: OpenKasirUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
       ],
@@ -272,10 +273,10 @@ container.register([
     key: CloseKasirUseCase.name,
     Class: CloseKasirUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
       ],
@@ -286,14 +287,14 @@ container.register([
     key: AddAdminUseCase.name,
     Class: AddAdminUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'adminRepository',
+          name: "adminRepository",
           internal: AdminRepository.name,
         },
         {
-          name: 'passwordHash',
+          name: "passwordHash",
           internal: PasswordHash.name,
         },
       ],
@@ -304,22 +305,22 @@ container.register([
     key: LoginAdminUseCase.name,
     Class: LoginAdminUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'adminRepository',
+          name: "adminRepository",
           internal: AdminRepository.name,
         },
         {
-          name: 'authenticationRepository',
+          name: "authenticationRepository",
           internal: AuthenticationRepository.name,
         },
         {
-          name: 'authenticationTokenManager',
+          name: "authenticationTokenManager",
           internal: AuthenticationTokenManager.name,
         },
         {
-          name: 'passwordHash',
+          name: "passwordHash",
           internal: PasswordHash.name,
         },
       ],
@@ -330,10 +331,10 @@ container.register([
     key: LogoutUserUseCase.name,
     Class: LogoutUserUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'authenticationRepository',
+          name: "authenticationRepository",
           internal: AuthenticationRepository.name,
         },
       ],
@@ -344,18 +345,18 @@ container.register([
     key: RefreshAuthenticationUseCase.name,
     Class: RefreshAuthenticationUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'authenticationRepository',
+          name: "authenticationRepository",
           internal: AuthenticationRepository.name,
         },
         {
-          name: 'authenticationTokenManager',
+          name: "authenticationTokenManager",
           internal: AuthenticationTokenManager.name,
         },
         {
-          name: 'adminRepository',
+          name: "adminRepository",
           internal: AdminRepository.name,
         },
       ],
@@ -366,10 +367,10 @@ container.register([
     key: AddJasaUseCase.name,
     Class: AddJasaUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'jasaRepository',
+          name: "jasaRepository",
           internal: JasaRepository.name,
         },
       ],
@@ -380,10 +381,10 @@ container.register([
     key: GetJasaUseCase.name,
     Class: GetJasaUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'jasaRepository',
+          name: "jasaRepository",
           internal: JasaRepository.name,
         },
       ],
@@ -394,10 +395,10 @@ container.register([
     key: DeleteJasaUseCase.name,
     Class: DeleteJasaUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'jasaRepository',
+          name: "jasaRepository",
           internal: JasaRepository.name,
         },
       ],
@@ -408,10 +409,10 @@ container.register([
     key: AddPegawaiUseCase.name,
     Class: AddPegawaiUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
       ],
@@ -423,10 +424,10 @@ container.register([
     key: GetAllPegawaiUseCase.name,
     Class: GetAllPegawaiUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
       ],
@@ -438,10 +439,10 @@ container.register([
     key: DeletePegawaiByIdUseCase.name,
     Class: DeletePegawaiByIdUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
       ],
@@ -453,10 +454,10 @@ container.register([
     key: GetPegawaiByIdUseCase.name,
     Class: GetPegawaiByIdUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
       ],
@@ -468,10 +469,10 @@ container.register([
     key: AddTransaksiUseCase.name,
     Class: AddTransaksiUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
       ],
@@ -482,10 +483,10 @@ container.register([
     key: GetAllTransaksiUseCase.name,
     Class: GetAllTransaksiUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
       ],
@@ -496,10 +497,10 @@ container.register([
     key: PostTransaksiPenjualanUseCase.name,
     Class: PostTransaksiPenjualanUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
       ],
@@ -510,10 +511,24 @@ container.register([
     key: AddProductUseCase.name,
     Class: AddProductUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'productRepository',
+          name: "productRepository",
+          internal: ProductRepository.name,
+        },
+      ],
+    },
+  },
+  // addCategoryUseCase
+  {
+    key: addCategoryUseCase.name,
+    Class: addCategoryUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
+        {
+          name: "productRepository",
           internal: ProductRepository.name,
         },
       ],
@@ -524,10 +539,10 @@ container.register([
     key: GetAllProductUseCase.name,
     Class: GetAllProductUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'productRepository',
+          name: "productRepository",
           internal: ProductRepository.name,
         },
       ],
@@ -538,10 +553,10 @@ container.register([
     key: GetProductByIdUseCase.name,
     Class: GetProductByIdUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'productRepository',
+          name: "productRepository",
           internal: ProductRepository.name,
         },
       ],
@@ -552,10 +567,10 @@ container.register([
     key: GetMinStockProductUseCase.name,
     Class: GetMinStockProductUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'productRepository',
+          name: "productRepository",
           internal: ProductRepository.name,
         },
       ],
@@ -566,37 +581,36 @@ container.register([
     key: AddTransaksiPenjualanUseCase.name,
     Class: AddTransaksiPenjualanUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
         {
-          name: 'transaksiDetailRepository',
+          name: "transaksiDetailRepository",
           internal: TransaksiDetailRepository.name,
         },
         {
-          name: 'idGenerator',
+          name: "idGenerator",
           concrete: nanoid,
         },
         {
-          name: 'productRepository',
+          name: "productRepository",
           internal: ProductRepository.name,
         },
         {
-          name: 'jasaRepository',
+          name: "jasaRepository",
           internal: JasaRepository.name,
         },
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
-
       ],
     },
   },
@@ -606,10 +620,10 @@ container.register([
     key: GetTransaksiDetailByIdUseCase.name,
     Class: GetTransaksiDetailByIdUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'transaksiDetailRepository',
+          name: "transaksiDetailRepository",
           internal: TransaksiDetailRepository.name,
         },
       ],
@@ -621,10 +635,10 @@ container.register([
     key: GetKasirByIdAdminUseCase.name,
     Class: GetKasirByIdAdminUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
       ],
@@ -636,10 +650,10 @@ container.register([
     key: GetAllHistoryKasirUseCase.name,
     Class: GetAllHistoryKasirUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
       ],
@@ -650,10 +664,10 @@ container.register([
     key: CheckKasirUseCase.name,
     Class: CheckKasirUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
       ],
@@ -664,14 +678,14 @@ container.register([
     key: PostTransaksiKasDebit.name,
     Class: PostTransaksiKasDebit,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
       ],
@@ -682,18 +696,18 @@ container.register([
     key: PostTransaksiKasKreditUseCase.name,
     Class: PostTransaksiKasKreditUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
       ],
@@ -704,14 +718,14 @@ container.register([
     key: GetHistoryTransaksiPegawaiUseCase.name,
     Class: GetHistoryTransaksiPegawaiUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
       ],
@@ -722,26 +736,26 @@ container.register([
     key: PostCancelTransaksiUseCase.name,
     Class: PostCancelTransaksiUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
         {
-          name: 'transaksiDetailRepository',
+          name: "transaksiDetailRepository",
           internal: TransaksiDetailRepository.name,
         },
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
         {
-          name: 'productRepository',
+          name: "productRepository",
           internal: ProductRepository.name,
         },
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
       ],
@@ -752,18 +766,18 @@ container.register([
     key: PostDebitKasUseCase.name,
     Class: PostDebitKasUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
         {
-          name: 'idGenerator',
+          name: "idGenerator",
           concrete: nanoid,
         },
       ],
@@ -774,22 +788,22 @@ container.register([
     key: PostCreditKasUseCase.name,
     Class: PostCreditKasUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'kasirRepository',
+          name: "kasirRepository",
           internal: KasirRepository.name,
         },
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
         {
-          name: 'idGenerator',
+          name: "idGenerator",
           concrete: nanoid,
         },
       ],
@@ -800,14 +814,14 @@ container.register([
     key: GetHistoryTransaksiPegawaiUseCase.name,
     Class: GetHistoryTransaksiPegawaiUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'pegawaiRepository',
+          name: "pegawaiRepository",
           internal: PegawaiRepository.name,
         },
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
       ],
@@ -819,10 +833,10 @@ container.register([
     key: GetHistoryPenjualanUseCase.name,
     Class: GetHistoryPenjualanUseCase,
     parameter: {
-      injectType: 'destructuring',
+      injectType: "destructuring",
       dependencies: [
         {
-          name: 'transaksiRepository',
+          name: "transaksiRepository",
           internal: TransaksiRepository.name,
         },
       ],

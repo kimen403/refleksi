@@ -30,14 +30,11 @@ const routes = (handler) => [
     path: '/products/minstock',
     handler: handler.getMinStockHandler,
   },
-  // {
-  //     method: 'DELETE',
-  //     path: '/threads/{threadId}/comments/{commentId}',
-  //     handler: handler.deleteCommentHandler,
-  //     options: {
-  //         auth: 'refleksi_jwt',
-  //     },
-  // },
+  {
+    method: 'POST',
+    path: '/add/category',
+    handler: handler.addCategoryHandler,
+  },
 ];
 
 module.exports = routes;

@@ -7,6 +7,12 @@ const DomainErrorTranslator = {
 };
 
 DomainErrorTranslator._directories = {
+  'NEW_CATEGORY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError(
+    'tidak dapat membuat kategori baru karena properti yang dibutuhkan tidak ada',
+  ),
+  'NEW_CATEGORY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError(
+    'tidak dapat membuat kategori baru karena tipe data tidak sesuai',
+  ),
   'KAS_HISTORY_RESPONSE.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError(
     'tidak dapat membuat kas baru karena properti yang dibutuhkan tidak ada',
   ),
