@@ -1,36 +1,76 @@
-class NewProduct {
+class NewProducts {
   constructor(payload) {
     this._verifyPayload(payload);
-    // Payload Yang Di Terima
+
     const {
-      productName, unitId, categoryId, stockNow, stockMin, unitPrice, image, hargaBeli,
+      name,
+      categoryId,
+      price,
+      stock,
+      weight,
+      isDiscount,
+      discount,
+      description,
+      link,
+      brand,
     } = payload;
-    this.productName = productName;
-    this.unitId = unitId;
+    this.productName = name;
     this.categoryId = categoryId;
-    this.stockNow = stockNow;
-    this.stockMin = stockMin ?? 0;
-    this.unitPrice = unitPrice;
-    this.hargaBeli = hargaBeli;
-    this.image = image;
+    this.price = price;
+    this.stock = stock;
+    this.weight = weight;
+    this.isDiscount = isDiscount;
+    this.discount = discount;
+    this.description = description;
+    this.link = link;
+    this.brand = brand;
   }
 
   _verifyPayload(payload) {
     // Payload Yang Di Terima
     const {
-      productName, unitId, categoryId, stockNow, stockMin, unitPrice, image, hargaBeli,
+      name,
+      categoryId,
+      price,
+      stock,
+      weight,
+      isDiscount,
+      discount,
+      description,
+      link,
+      brand,
     } = payload;
 
     // veryfiy payload required
-    if (!productName || !unitId || !categoryId || !stockNow || !unitPrice || !hargaBeli) {
-      throw new Error('NEW_PRODUCT.NOT_CONTAIN_NEEDED_PROPERTY');
+    console.log(typeof discount);
+    if (
+      !name ||
+      !categoryId ||
+      !price ||
+      !stock ||
+      !weight ||
+      !link ||
+      !brand
+    ) {
+      throw new Error("NEW_PRODUCTS.NOT_CONTAIN_NEEDED_PROPERTY");
     }
 
     // veryfiy payload data type
-    if (typeof productName !== 'string' || typeof unitId !== 'number' || typeof categoryId !== 'number' || typeof stockNow !== 'number' || typeof stockMin !== 'number' || typeof unitPrice !== 'number' || typeof hargaBeli !== 'number' || typeof image !== 'string') {
-      throw new Error('NEW_PRODUCT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    if (
+      typeof name !== "string" ||
+      typeof categoryId !== "number" ||
+      typeof price !== "number" ||
+      typeof stock !== "number" ||
+      typeof weight !== "number" ||
+      // typeof isDiscount !== "boolean" ||
+      typeof discount !== "number" ||
+      typeof description !== "string" ||
+      typeof link !== "string" ||
+      typeof brand !== "string"
+    ) {
+      throw new Error("NEW_PRODUCTS.NOT_MEET_DATA_TYPE_SPECIFICATION");
     }
   }
 }
 
-module.exports = NewProduct;
+module.exports = NewProducts;

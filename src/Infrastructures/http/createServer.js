@@ -1,18 +1,15 @@
-const Hapi = require('@hapi/hapi');
-const Jwt = require('@hapi/jwt');
-const hacli = require('@antoniogiordano/hacli');
+const Hapi = require("@hapi/hapi");
+const Jwt = require("@hapi/jwt");
+const hacli = require("@antoniogiordano/hacli");
 
-const ClientError = require('../../Commons/exceptions/ClientError');
-const DomainErrorTranslator = require('../../Commons/exceptions/DomainErrorTranslator');
+const ClientError = require("../../Commons/exceptions/ClientError");
+const DomainErrorTranslator = require("../../Commons/exceptions/DomainErrorTranslator");
 
-const admin = require('../../Interfaces/http/api/admin');
-const authentications = require('../../Interfaces/http/api/authentications');
+const admin = require("../../Interfaces/http/api/admin");
+const authentications = require("../../Interfaces/http/api/authentications");
 
-const jasa = require('../../Interfaces/http/api/jasa');
-const pegawai = require('../../Interfaces/http/api/pegawai');
-const transaksi = require('../../Interfaces/http/api/transaksi');
-const product = require('../../Interfaces/http/api/product');
-const kasir = require('../../Interfaces/http/api/kasir');
+const product = require("../../Interfaces/http/api/product");
+const order = require("../../Interfaces/http/api/order");
 
 const createServer = async (container) => {
   const server = Hapi.server({
@@ -20,7 +17,7 @@ const createServer = async (container) => {
     port: process.env.PORT,
     routes: {
       cors: {
-        origin: ['*'],
+        origin: ["*"],
       },
     },
   });
@@ -32,20 +29,20 @@ const createServer = async (container) => {
     {
       plugin: hacli,
       options: {
-        permissions: ['ADMIN'],
+        permissions: ["ADMIN"],
       },
     },
   ]);
 
   server.route({
-    method: 'GET',
-    path: '/',
+    method: "GET",
+    path: "/",
     handler: () => ({
-      value: 'API Refleksi Berhasil dijalankan ahoy!  123',
+      value: "API Refleksi Berhasil dijalankan ahoy!  123",
     }),
   });
 
-  server.auth.strategy('refleksi_jwt', 'jwt', {
+  server.auth.strategy("refleksi_jwt", "jwt", {
     keys: process.env.ACCESS_TOKEN_KEY,
     verify: {
       aud: false,
@@ -58,19 +55,12 @@ const createServer = async (container) => {
       credentials: {
         id: artifacts.decoded.payload.id,
         username: artifacts.decoded.payload.username,
-        isKasirOpen: artifacts.decoded.payload.isKasirOpen,
-        idKasir: artifacts.decoded.payload.idKasir,
         permissions: artifacts.decoded.payload.role,
       },
     }),
   });
 
   await server.register([
-    {
-      plugin: jasa,
-      options: { container },
-
-    },
     {
       plugin: admin,
       options: { container },
@@ -79,25 +69,18 @@ const createServer = async (container) => {
       plugin: authentications,
       options: { container },
     },
-    {
-      plugin: pegawai,
-      options: { container },
-    },
-    {
-      plugin: transaksi,
-      options: { container },
-    },
+
     {
       plugin: product,
       options: { container },
     },
     {
-      plugin: kasir,
+      plugin: order,
       options: { container },
     },
   ]);
 
-  server.ext('onPreResponse', (request, h) => {
+  server.ext("onPreResponse", (request, h) => {
     // mendapatkan konteks response dari request
     const { response } = request;
 
@@ -108,7 +91,7 @@ const createServer = async (container) => {
       // penanganan client error secara internal.
       if (translatedError instanceof ClientError) {
         const newResponse = h.response({
-          status: 'fail',
+          status: "fail",
           message: translatedError.message,
         });
         newResponse.code(translatedError.statusCode);
@@ -122,8 +105,8 @@ const createServer = async (container) => {
 
       // penanganan server error sesuai kebutuhan
       const newResponse = h.response({
-        status: 'error',
-        message: 'terjadi kegagalan pada server kami',
+        status: "error",
+        message: "terjadi kegagalan pada server kami",
       });
       newResponse.code(500);
       return newResponse;

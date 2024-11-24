@@ -73,6 +73,7 @@ const GetAllProductUseCase = require("../Applications/use_case/Product_UseCase/G
 const GetMinStockProductUseCase = require("../Applications/use_case/Product_UseCase/GetMinStock");
 const GetProductByIdUseCase = require("../Applications/use_case/Product_UseCase/GetProductById");
 const addCategoryUseCase = require("../Applications/use_case/Product_UseCase/AddCategory");
+const getCategoryUseCase = require("../Applications/use_case/Product_UseCase/GetCategory");
 
 // transaksiPenjualanUseCase
 const AddTransaksiPenjualanUseCase = require("../Applications/use_case/Transaksi_UseCase/AddTransaksiPenjualanUseCase");
@@ -510,6 +511,20 @@ container.register([
   {
     key: AddProductUseCase.name,
     Class: AddProductUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
+        {
+          name: "productRepository",
+          internal: ProductRepository.name,
+        },
+      ],
+    },
+  },
+  // getCategoryUseCase
+  {
+    key: getCategoryUseCase.name,
+    Class: getCategoryUseCase,
     parameter: {
       injectType: "destructuring",
       dependencies: [

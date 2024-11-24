@@ -20,6 +20,8 @@
         "no-unused-vars": "off",
         "no-var": "off",
         "quotes": "off",
-        "comma-dangle": "off"
+        "comma-dangle": "off",
+        "operator-linebreak":"off",
+        "object-curly-newline":"off"
     }
 }

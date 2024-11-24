@@ -10,47 +10,65 @@ class ProductRepositoryPostgres extends ProductRepository {
   }
 
   async addProduct(newProduct) {
-    const {
+    console.log("masuk Repository addProduct");
+    // eslint-disable-next-line vars-on-top
+    var {
       productName,
-      unitId,
       categoryId,
-      stockNow,
-      stockMin,
-      unitPrice,
-      image,
-      hargaBeli,
+      price,
+      sellprice,
+      stock,
+      weight,
+      isDiscount,
+      discount,
+      link,
+      description,
+      brand,
     } = newProduct;
     const date = new Date().toISOString().split("T")[0].replace(/-/g, "");
     const productId = `P-${this._idGenerator(2)}-${date}`;
-    const barcode = `P-${this._idGenerator(3)}${date}`;
+    productId.toUpperCase();
+    isDiscount = isDiscount ? 1 : 0;
+    const status = 1;
 
     const query = {
-      text: 'INSERT INTO tblproduct VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING product_id AS "productId", barcode, product_name AS "name", unit_id AS "unitId", category_id AS category, stock_now AS stock , stock_min AS "stockMin", unit_price AS "unitPrice", image',
+      text: 'INSERT INTO products VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING product_id AS "productId", name AS "productName", category_id AS "categoryId", sell_price AS "price", stock, weight, is_discount AS "isDiscount", discount, description',
       values: [
         productId,
-        barcode,
         productName,
-        unitId,
         categoryId,
-        stockNow,
-        stockMin,
-        unitPrice,
-        hargaBeli,
-        image,
+        sellprice,
+        price,
+        stock,
+        weight,
+        isDiscount,
+        discount,
+        status,
+        description,
+        link,
+        brand,
       ],
     };
-
-    const { rows } = await this._pool.query(query);
-    return rows[0];
+    try {
+      const { rows } = await this._pool.query(query);
+      return rows[0];
+    } catch (e) {
+      console.log(e);
+    }
+    return null;
   }
 
   async getAllProduct() {
+    // const query = {
+    //   text: 'SELECT product_id AS "productId",  barcode , product_name AS name, stock_now AS stock,  unit_price AS price, image,tblproductunit.unit_name AS "satuan" , tblproductcategory.category_name AS "category" FROM tblproduct INNER JOIN tblproductunit ON tblproduct.unit_id = tblproductunit.unit_id INNER JOIN tblproductcategory ON tblproduct.category_id = tblproductcategory.category_id',
+    // };
+
     const query = {
-      text: 'SELECT product_id AS "productId",  barcode , product_name AS name, stock_now AS stock,  unit_price AS price, image,tblproductunit.unit_name AS "satuan" , tblproductcategory.category_name AS "category" FROM tblproduct INNER JOIN tblproductunit ON tblproduct.unit_id = tblproductunit.unit_id INNER JOIN tblproductcategory ON tblproduct.category_id = tblproductcategory.category_id',
+      text: "SELECT p.product_id, p.name, p.sell_price as price, c.name as category FROM products p JOIN categories c ON p.category_id = c.category_id where p.status = 1",
     };
 
     const result = await this._pool.query(query);
-
+    console.log(result.rows);
     return result.rows;
   }
 
@@ -150,6 +168,14 @@ class ProductRepositoryPostgres extends ProductRepository {
     if (!rows[0]) {
       throw new InvariantError("Stock tidak mencukupi");
     }
+  }
+
+  async getCategory() {
+    const query = {
+      text: 'SELECT category_id AS "categoryId", category_name AS "title" FROM tblproductcategory',
+    };
+    const result = await this._pool.query(query);
+    return result.rows;
   }
 }
 

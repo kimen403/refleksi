@@ -5,6 +5,8 @@ const AddProductUseCase = require("../../../../Applications/use_case/Product_Use
 const GetAllProductUseCase = require("../../../../Applications/use_case/Product_UseCase/GetAllProduct");
 const GetMinStockUseCase = require("../../../../Applications/use_case/Product_UseCase/GetMinStock");
 const GetProductByIdUseCase = require("../../../../Applications/use_case/Product_UseCase/GetProductById");
+const AddCategoryUseCase = require("../../../../Applications/use_case/Product_UseCase/AddCategory");
+const GetCategoryUseCase = require("../../../../Applications/use_case/Product_UseCase/GetCategory");
 
 class ProductHandler {
   constructor(container) {
@@ -13,15 +15,17 @@ class ProductHandler {
     this.getProductsHandler = this.getProductsHandler.bind(this);
     this.getProductsByIdHandler = this.getProductsByIdHandler.bind(this);
     this.getMinStockHandler = this.getMinStockHandler.bind(this);
+    this.addCategoryHandler = this.addCategoryHandler.bind(this);
+    this.getCategoryHandler = this.getCategoryHandler.bind(this);
   }
 
   async postProductsHandler(request, h) {
     const usecasePayload = request.payload;
-    console.log(usecasePayload);
     const addProductUseCase = this._container.getInstance(
       AddProductUseCase.name
     );
     const addedProduct = await addProductUseCase.execute(usecasePayload);
+    console.log(usecasePayload);
     const response = h.response({
       status: "success",
       data: addedProduct,
@@ -76,15 +80,26 @@ class ProductHandler {
 
   async addCategoryHandler(request, h) {
     const usecasePayload = request.payload;
-    const addCategoryUseCase = this._container.getInstance(
-      AddCategoryUseCase.name
-    );
+    const addCategoryUseCase = this._container.getInstance(AddCategoryUseCase);
     const addedCategory = await addCategoryUseCase.execute(usecasePayload);
     const response = h.response({
       status: "success",
       data: addedCategory,
     });
     response.code(201);
+    return response;
+  }
+
+  async getCategoryHandler(request, h) {
+    const getCategoryUseCase = this._container.getInstance(
+      GetCategoryUseCase.name
+    );
+    const category = await getCategoryUseCase.execute();
+    const response = h.response({
+      status: "success",
+      data: category,
+    });
+    response.code(200);
     return response;
   }
 }
