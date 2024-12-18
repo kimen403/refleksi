@@ -30,16 +30,17 @@ class LoginUserUseCase {
     const role = await this._adminRepository.getRoleByUsername(username);
     console.log(role);
     const token = await this._authenticationTokenManager.createAccessToken({
+      role,
       username,
       id,
     });
     const refreshToken =
       await this._authenticationTokenManager.createRefreshToken({
+        role,
         username,
         id,
       });
 
-    console.log("ini jalan login");
     const newAuthentication = new NewAuthentication({
       id,
       username,

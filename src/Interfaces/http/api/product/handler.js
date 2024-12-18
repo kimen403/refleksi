@@ -7,6 +7,8 @@ const GetMinStockUseCase = require("../../../../Applications/use_case/Product_Us
 const GetProductByIdUseCase = require("../../../../Applications/use_case/Product_UseCase/GetProductById");
 const AddCategoryUseCase = require("../../../../Applications/use_case/Product_UseCase/AddCategory");
 const GetCategoryUseCase = require("../../../../Applications/use_case/Product_UseCase/GetCategory");
+const GetDraftProductUseCase = require("../../../../Applications/use_case/Product_UseCase/GetDraftProduct");
+const AddActivateProductUseCase = require("../../../../Applications/use_case/Product_UseCase/AddActivateProduct");
 
 class ProductHandler {
   constructor(container) {
@@ -17,6 +19,9 @@ class ProductHandler {
     this.getMinStockHandler = this.getMinStockHandler.bind(this);
     this.addCategoryHandler = this.addCategoryHandler.bind(this);
     this.getCategoryHandler = this.getCategoryHandler.bind(this);
+    this.getDraftProductHandler = this.getDraftProductHandler.bind(this);
+    this.postActivateProductHandler =
+      this.postActivateProductHandler.bind(this);
   }
 
   async postProductsHandler(request, h) {
@@ -25,7 +30,24 @@ class ProductHandler {
       AddProductUseCase.name
     );
     const addedProduct = await addProductUseCase.execute(usecasePayload);
-    console.log(usecasePayload);
+    const response = h.response({
+      status: "success",
+      massage: "Product berhasil ditambahkan",
+      data: addedProduct,
+    });
+    response.code(201);
+    return response;
+  }
+
+  async postActivateProductHandler(request, h) {
+    const usecasePayload = request.payload;
+    console.log("masuk handler activate product", request.payload);
+    const addActivateProductUseCase = this._container.getInstance(
+      AddActivateProductUseCase.name
+    );
+    const addedProduct = await addActivateProductUseCase.execute(
+      usecasePayload
+    );
     const response = h.response({
       status: "success",
       data: addedProduct,
@@ -40,7 +62,6 @@ class ProductHandler {
       GetAllProductUseCase.name
     );
     const products = await getAllProductUseCase.execute();
-
     const response = h.response({
       status: "success",
       data: products,
@@ -51,11 +72,13 @@ class ProductHandler {
 
   async getProductsByIdHandler(request, h) {
     const { id } = request.params;
+    console.log(id);
+    console.log("masuk handler get product by id");
     const getProductByIdUseCase = this._container.getInstance(
       GetProductByIdUseCase.name
     );
     const products = await getProductByIdUseCase.execute(id);
-
+    console.log("DRAFT DETAIL;", products);
     const response = h.response({
       status: "success",
       data: products,
@@ -98,6 +121,20 @@ class ProductHandler {
     const response = h.response({
       status: "success",
       data: category,
+    });
+    response.code(200);
+    return response;
+  }
+
+  async getDraftProductHandler(request, h) {
+    const getDraftProductUseCase = this._container.getInstance(
+      GetDraftProductUseCase.name
+    );
+    const products = await getDraftProductUseCase.execute();
+    console.log("DRAFT DETAIL;");
+    const response = h.response({
+      status: "success",
+      data: products,
     });
     response.code(200);
     return response;

@@ -7,6 +7,18 @@ const DomainErrorTranslator = {
 };
 
 DomainErrorTranslator._directories = {
+  "PRODUCT_NOT_FOUND: new InvariantError": new InvariantError(
+    "product tidak ditemukan"
+  ),
+  PRODUCT_NOT_CONTAIN_NEEDED_PROPERTY: new InvariantError(
+    "tidak dapat membuat product baru karena properti yang dibutuhkan tidak ada"
+  ),
+  "ACTIVATE_PRODUCT.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
+    "tidak dapat membuat product baru karena properti yang dibutuhkan tidak ada"
+  ),
+  "ACTIVATE_PRODUCT.NOT_MEET_DATA_TYPE_SPECIFICATION": new InvariantError(
+    "tidak dapat membuat product baru karena tipe data tidak sesuai"
+  ),
   "NEW_PRODUCTS.NOT_CONTAIN_NEEDED_PROPERTY": new InvariantError(
     "tidak dapat membuat product baru karena properti yang dibutuhkan tidak ada"
   ),

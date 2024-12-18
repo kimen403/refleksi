@@ -3,23 +3,19 @@
 // const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 // const NewComment = require('../../../Domains/comments/entities/NewComment');
 
-class GetProductByIdUseCase {
+class GetDraftProductUseCase {
   // constructor akan menerima parameter yang dikirimkan oleh dependency injection
   // Parameter adalah kumpulan fungsi yang dibutuhkan oleh use case
   // Contoh : commentRepository, threadRepository di butuhkan untuk menambahkan commentUseCase
-  constructor({ productRepository }) {
+  constructor({ productRepository, threadRepository }) {
     this._productRepository = productRepository;
   }
 
-  async execute(useCasePayload) {
-    const productId = useCasePayload;
-    console.log("masuk use case get product by id", productId);
-    await this._productRepository.verifyAvailableProduct(productId);
-
-    console.log("masuk use case get product by id");
-    const product = await this._productRepository.getProductById(productId);
-    return product;
+  async execute() {
+    console.log("GetDraftProductUseCase.execute");
+    const products = await this._productRepository.getDraftProduct();
+    return products;
   }
 }
 
-module.exports = GetProductByIdUseCase;
+module.exports = GetDraftProductUseCase;

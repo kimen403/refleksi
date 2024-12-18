@@ -74,6 +74,8 @@ const GetMinStockProductUseCase = require("../Applications/use_case/Product_UseC
 const GetProductByIdUseCase = require("../Applications/use_case/Product_UseCase/GetProductById");
 const addCategoryUseCase = require("../Applications/use_case/Product_UseCase/AddCategory");
 const getCategoryUseCase = require("../Applications/use_case/Product_UseCase/GetCategory");
+const GetDraftProductUseCase = require("../Applications/use_case/Product_UseCase/GetDraftProduct");
+const AddActivateProductUseCase = require("../Applications/use_case/Product_UseCase/AddActivateProduct");
 
 // transaksiPenjualanUseCase
 const AddTransaksiPenjualanUseCase = require("../Applications/use_case/Transaksi_UseCase/AddTransaksiPenjualanUseCase");
@@ -242,6 +244,35 @@ container.register([
 
 // registering use cases
 container.register([
+  // addActivateProductUseCase
+  {
+    key: AddActivateProductUseCase.name,
+    Class: AddActivateProductUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
+        {
+          name: "productRepository",
+          internal: ProductRepository.name,
+        },
+      ],
+    },
+  },
+  // getDraftProductUseCase
+  {
+    key: GetDraftProductUseCase.name,
+    Class: GetDraftProductUseCase,
+    parameter: {
+      injectType: "destructuring",
+      dependencies: [
+        {
+          name: "productRepository",
+          internal: ProductRepository.name,
+        },
+      ],
+    },
+  },
+  // deleteAuthenticationUseCase
   {
     key: DeleteAuthenticationUseCase.name,
     Class: DeleteAuthenticationUseCase,

@@ -71,6 +71,14 @@ exports.up = (pgm) => {
     brand: {
       type: "VARCHAR(50)",
     },
+    image: {
+      type: "TEXT[5]",
+      default: "{}",
+    },
+    size: {
+      type: "VARCHAR(30)",
+      default: "ONE SIZE",
+    },
     created_at: {
       type: "TIMESTAMP",
       default: pgm.func("current_timestamp"),

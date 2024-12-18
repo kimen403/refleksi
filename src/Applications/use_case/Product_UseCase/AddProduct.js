@@ -16,6 +16,13 @@ class AddProductUseCase {
     // this._threadRepository= threadRepository;
   }
 
+  // name = string
+  // brand = string
+  // categoryId = int
+  // price = int
+  // link = string
+  // image = []
+
   async execute(useCasePayload) {
     console.log(useCasePayload);
     const kursEURIDR = await getKurs();

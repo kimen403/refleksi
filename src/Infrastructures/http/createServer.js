@@ -29,7 +29,7 @@ const createServer = async (container) => {
     {
       plugin: hacli,
       options: {
-        permissions: ["ADMIN"],
+        permissions: ["admin"],
       },
     },
   ]);
@@ -50,14 +50,17 @@ const createServer = async (container) => {
       sub: false,
       maxAgeSec: process.env.ACCESS_TOKEN_AGE,
     },
-    validate: (artifacts, _request, h) => ({
-      isValid: true,
-      credentials: {
-        id: artifacts.decoded.payload.id,
-        username: artifacts.decoded.payload.username,
-        permissions: artifacts.decoded.payload.role,
-      },
-    }),
+    validate: (artifacts, _request, h) => {
+      console.log(artifacts.decoded.payload);
+      return {
+        isValid: true,
+        credentials: {
+          id: artifacts.decoded.payload.id,
+          username: artifacts.decoded.payload.username,
+          permissions: artifacts.decoded.payload.role,
+        },
+      };
+    },
   });
 
   await server.register([

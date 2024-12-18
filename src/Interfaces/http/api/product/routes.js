@@ -1,3 +1,5 @@
+const { options } = require("@hapi/hapi/lib/cors");
+
 const routes = (handler) => [
   {
     method: "POST",
@@ -5,19 +7,23 @@ const routes = (handler) => [
     handler: handler.postProductsHandler,
   },
   {
+    method: "POST",
+    path: "/product/activate",
+    handler: handler.postActivateProductHandler,
+    options: {
+      auth: "refleksi_jwt",
+      plugins: {
+        hacli: {
+          permissions: ["admin", "MANAGER", "OWNER"],
+        },
+      },
+    },
+  },
+  {
     method: "GET",
     path: "/products",
     handler: handler.getProductsHandler,
-    // options: {
-    //   auth: "refleksi_jwt",
-    //   plugins: {
-    //     hacli: {
-    //       permissions: ["ADMIN", "MANAGER", "OWNER"],
-    //     },
-    //   },
-    // },
   },
-
   {
     method: "GET",
     path: "/product/{id}",
@@ -38,6 +44,19 @@ const routes = (handler) => [
     method: "GET",
     path: "/category",
     handler: handler.getCategoryHandler,
+  },
+  {
+    method: "GET",
+    path: "/products/draft",
+    handler: handler.getDraftProductHandler,
+    options: {
+      auth: "refleksi_jwt",
+      plugins: {
+        hacli: {
+          permissions: ["admin", "MANAGER", "OWNER"],
+        },
+      },
+    },
   },
 ];
 
